@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お絵かき アプリ</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <script src="https://kit.fontawesome.com/cd8deebb58.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+</head>
+
+<body>
+    <!-- タイトル文字 -->
+    <h1>Paint App</h1>
+
+    <section id="contents">
+        <!-- カメラ全体 -->
+        <div id="camera-wrapper">
+            <div class="canvas-parent" id="canvasParent">
+                <canvas id="paint"></canvas>
+            </div>
+            <!-- <canvas id="paint" width="842" height="595"></canvas> -->
+            <nav>
+                <ul id="color">
+                    <li id="red"><i class="fas fa-fill-drip"></i></li>
+                    <li id="pink"><i class="fas fa-fill-drip"></i></li>
+                    <li id="orange"><i class="fas fa-fill-drip"></i></li>
+                    <li id="blue"><i class="fas fa-fill-drip"></i></li>
+                    <li id="green"><i class="fas fa-fill-drip"></i></li>
+                    <li id="yellow"><i class="fas fa-fill-drip"></i></li>
+                    <li id="black"><i class="fas fa-fill-drip"></i></li>
+                </ul>
+                <ul id="size">
+                    <li><i class="fas fa-pen"></i></li>
+                    <li><i class="fas fa-pen"></i></li>
+                    <li><i class="fas fa-pen"></i></li>
+                    <li class="star"><i class="fa-solid fa-star"></i></li>
+                    <li id="eraser"><i class="fas fa-eraser"></i></li>
+                    <!-- <li id="save"><i class="fas fa-download"></i></li> -->
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script>
+        //-----------------------------------------------------
+        // グローバル変数
+        //-----------------------------------------------------
+        let canvasParent = document.getElementById("canvasParent");
+        var canvas = document.getElementById('paint');
+
+        let WIDTH = 0;
+        let HEIGHT = 0;
+        let resize = () => {
+            canvas.width = canvasParent.clientWidth;
+            canvas.height = canvasParent.clientHeight;
+            WIDTH = canvasParent.clientWidth;
+            HEIGHT = canvasParent.clientHeight;
+        };
+
+        let starFlag = false;
+
+
+        // setInterval(() => resize(), 0);
+        //-----------------------------------------------------
+        // onload
+        //-----------------------------------------------------
+        window.onload = () => {
+            let no = 0;
+            resize();
+            // ペイント
+            let isTouch = ('ontouchstart' in window);
+            let drawFlag = false,
+                oldX = 0,
+                oldY = 0;
+            let canvasX = $('#paint').offset().left;
+            let canvasY = $('#paint').offset().top;
+            let context = canvas.getContext("2d");
+            let penColor = "rgb(255,0,0)",
+                penSize = 2;
+            $('#color li#red').addClass('active');
+            $('#size li:nth-of-type(1)').addClass('active');
+            // context.fillStyle = '#ffffFF';
+            // context.fillRect(0, 0, WIDTH, 380);
+            context.beginPath();
+            context.fillStyle = 'rgb(255,255,255)';
+            context.fillRect(0, 0, WIDTH, HEIGHT);
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+
+            // 星を描画する関数（中心x座標、中心y座標、半径、色）
+            const drawStar = function (cx, cy, r, color) {
+                let theta = -90;    // 角度修正（キャンバスでは3時方向が0度扱いのため12時方向を0度とする）
+                let star = [];
+
+                while (star.length < 5) {   // 星の5つの頂点を求める
+                    const pos = {
+                        x: r * Math.cos(theta * Math.PI / 180) + cx,
+                        y: r * Math.sin(theta * Math.PI / 180) + cy,
+                    };
+                    star.push(pos);
+                    theta += 72;    // 次の点の位置：360度 ÷ 5 = 72度
+                }
+
+                // 星を描画する
+                context.fillStyle = color;
+                context.beginPath();  // パスの開始
+                context.moveTo(star[0].x, star[0].y);
+                context.lineTo(star[2].x, star[2].y);
+                context.lineTo(star[4].x, star[4].y);
+                context.lineTo(star[1].x, star[1].y);
+                context.lineTo(star[3].x, star[3].y);
+                context.closePath();  // パスを閉じる
+                context.fill();
+            }
+
+            $('.star').on({
+                'touchstart mousedown': function (e) {
+                    starFlag = true;
+                    $('#size li').removeClass('active');
+                    $(this).addClass('active');
+                }
+            });
+
+            $('#paint').on({
+                'touchstart mousedown': function (e) {
+
+                    e.preventDefault();
+                    // resize();
+                    this.pageX = (isTouch ? event.changedTouches[0].pageX : e.pageX);
+                    this.pageY = (isTouch ? event.changedTouches[0].pageY : e.pageY);
+
+                    drawFlag = true;
+                    context.strokeStyle = penColor;
+                    context.lineWidth = penSize;
+
+                    var blurSize = Number(penSize) + 1
+                    context.shadowBlur = blurSize;
+                    //console.log(blurSize);
+                    /**/
+                    context.shadowColor = penColor;
+                    oldX = this.pageX - canvasX;
+                    oldY = this.pageY - canvasY;
+                    if (starFlag) {
+                        drawFlag = false;
+
+
+                        drawStar(oldX, oldY, 20, penColor);
+                        return;
+                    };
+                    context.beginPath();
+                    context.moveTo(oldX, oldY);
+                },
+                'touchmove mousemove': function (e) {
+                    if (!drawFlag) return;
+                    e.preventDefault();
+                    var x = (isTouch ? event.changedTouches[0].pageX : e.pageX) - canvasX;
+                    var y = (isTouch ? event.changedTouches[0].pageY : e.pageY) - canvasY;
+
+                    context.lineTo(x, y);
+                    context.stroke();
+                    //context.closePath();
+                    //oldX = x;
+                    //oldY = y;
+                },
+                'touchend mouseup': function (e) {
+                    drawFlag = false;
+                }
+            });
+            //消しゴム
+            $("#eraser").on('touchstart mousedown', function (e) {
+                $('#color li').removeClass('active');
+                $('#size li').removeClass('active');
+                $('#size li:nth-of-type(3)').addClass('active');
+                penSize = 14;
+                penColor = '#fff';
+            });
+
+            //線幅を変更
+            $("#size li").on('touchstart mousedown', function (e) {
+                // console.log($(this).index());
+                if ($(this).index() != 3) {
+                    $('#size li').removeClass('active');
+                    starFlag = false;
+                }
+                if ($(this).index() == 0) {
+                    penSize = 2;
+                    $(this).addClass('active');
+                } else if ($(this).index() == 1) {
+                    penSize = 6;
+                    $(this).addClass('active');
+                } else if ($(this).index() == 2) {
+                    penSize = 14;
+                    $(this).addClass('active');
+                }
+            });
+
+            //色を変更
+            $('#color li').on('touchstart mousedown', function (e) {
+                $('#color li').removeClass('active');
+                $(this).addClass('active');
+                penColor = $(this).css('color');
+            });
+
+        };
+    </script>
+</body>
+
+</html>

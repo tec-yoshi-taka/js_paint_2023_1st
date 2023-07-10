@@ -1,0 +1,201 @@
+body {
+  background: #fff url(../images/bg.png) center;
+  height: 100vh;
+  font-family: "Raleway", sans-serif;
+}
+
+h1 {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 2rem;
+  color: cadetblue;
+  text-shadow: 0 0 3px #fff;
+  font-weight: bold;
+}
+
+#contents {
+  width: 90vw;
+  margin: 0 auto;
+}
+.canvas-parent {
+  width: 90vw;
+  height: 60vh;
+}
+
+#btn-shutter {
+  width: 60px;
+  height: 60px;
+  background: none;
+  border: none;
+}
+
+#btn-shutter i {
+  font-size: 58px;
+}
+
+#paint {
+  border: 1px solid #ccc;
+}
+#still {
+  display: none;
+}
+
+/* ペイント追加 */
+nav {
+  width: 90vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+ul#color,
+ul#size {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+form {
+  float: left;
+}
+
+nav li {
+  margin: 0 2px;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  float: left;
+  text-align: center;
+  color: #fff;
+  font-size: 24px;
+  line-height: 58px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 3px #ffffff;
+}
+
+#color li {
+  color: #fff;
+  cursor: pointer;
+}
+#color li.active {
+  background-color: #fff;
+}
+#color li#red {
+  background-color: #ec5064;
+}
+#color li#red.active,
+#color li#red:hover {
+  color: #ec5064;
+  background-color: #fff;
+}
+#color li#pink {
+  background-color: #ffaab0;
+}
+#color li#pink.active,
+#color li#pink:hover {
+  color: #ffaab0;
+  background-color: #fff;
+}
+
+#color li#orange {
+  background-color: #f9a834;
+}
+#color li#orange.active,
+#color li#orange:hover {
+  color: #f9a834;
+  background-color: #fff;
+}
+#color li#blue {
+  background-color: #8fc6c4;
+}
+#color li#blue.active,
+#color li#blue:hover {
+  color: #8fc6c4;
+  background-color: #fff;
+}
+#color li#green {
+  background-color: #007043;
+}
+#color li#green.active,
+#color li#green:hover {
+  color: #007043;
+  background-color: #fff;
+}
+
+#color li#yellow {
+  background-color: #f5d80c;
+}
+#color li#yellow.active,
+#color li#yellow:hover {
+  color: #f5d80c;
+  background-color: #fff;
+}
+
+#color li#black {
+  background-color: #3f474c;
+}
+#color li#black.active,
+#color li#black:hover {
+  color: #3f474c;
+  background-color: #fff;
+}
+
+#size {
+  transform: translateX(5px);
+}
+nav #size li {
+  color: #333;
+  cursor: pointer;
+}
+#size li {
+  background: #dad8d7;
+}
+#size li.active,
+#size li:hover {
+  color: #dad8d7;
+  background: #333;
+}
+nav #size li:nth-of-type(1) {
+  font-size: 14px;
+}
+nav #size li:nth-of-type(2) {
+  font-size: 22px;
+}
+nav #size li:nth-of-type(3) {
+  font-size: 28px;
+}
+nav #size li:nth-of-type(4),
+nav #size li:nth-of-type(5) {
+  font-size: 31px;
+}
+
+#size li img {
+  opacity: 0.4;
+}
+
+ul:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+@media screen and (max-width: 828px) {
+  h1 {
+    font-size: 18px;
+  }
+  nav li {
+    margin: 0 2px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    float: left;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    line-height: 36px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px #ffffff;
+  }
+}
